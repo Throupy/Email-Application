@@ -1,6 +1,7 @@
 """Main application frame."""
 import tkinter as tk
 from .signin import SignIn
+from .mainpage import MainPage
 from backend.DBHelper import DBHelper
 
 
@@ -35,3 +36,4 @@ class Application(tk.Tk):
         for page in self.grid_slaves():
             page.grid_remove()
         self.pages[new_page].grid(column=0, row=0)
+        self.CURRENT_USER = self.CURRENT_USER

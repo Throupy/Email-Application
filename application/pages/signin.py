@@ -1,6 +1,9 @@
-"""Sign in page for the email application"""
+"""Sign in page for the email application."""
+import winsound
 import tkinter as tk
 from tkinter import messagebox
+from pages.mainpage import MainPage
+
 
 class SignIn(tk.Frame):
     """Landing page for application."""
@@ -52,9 +55,13 @@ class SignIn(tk.Frame):
         if self.parent.dbhelper.userExists(self.usernameEntry.get()):
             # login
             self.parent.CURRENT_USER = self.usernameEntry.get()
-            print("Login success")
+            winsound.PlaySound("SystemExclamation", winsound.SND_ASYNC)
+            # I need to add the page here, otherwise it gets initialized at the
+            # start, so the CURRENT_USER isn't set, thus is None.
+            self.parent.pages[MainPage] = MainPage(self.parent)
+            self.parent.change_page(MainPage)
         else:
-            print("User doesn't exist")
+            messagebox.showerror("Oops", "No user was found with those details")
 
     def handleRegister(self):
         """Handle the register event."""
@@ -67,3 +74,5 @@ class SignIn(tk.Frame):
                                                 self.passwordEntry.get())
                 return True
             return False
+        else:
+            messagebox.showerror("Oops", "You must populate all fields")

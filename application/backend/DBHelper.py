@@ -28,3 +28,4 @@ class DBHelper:
         """Create a user with the specified information."""
         self.cursor.execute("""INSERT INTO users (username, password)
                                VALUES (?,?)""", (username, password))
+        self.connection.commit()
