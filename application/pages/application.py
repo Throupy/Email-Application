@@ -14,10 +14,10 @@ class Application(tk.Tk):
         """Initialise Application class."""
         super().__init__()
         self.dbhelper = DBHelper()
-        self.grid_columnconfigure(0, weight=1000)
+        # self.grid_columnconfigure(0, weight=1000)
 
         self.resizable(False, False)
-        self.geometry("500x500")
+        self.geometry("200x300")
         self.pages = {}
         self.create_pages()
 
@@ -36,4 +36,5 @@ class Application(tk.Tk):
         for page in self.grid_slaves():
             page.grid_remove()
         self.pages[new_page].grid(column=0, row=0)
-        self.CURRENT_USER = self.CURRENT_USER
+        if new_page == MainPage:
+            self.geometry("500x500")

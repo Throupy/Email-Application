@@ -11,8 +11,8 @@ class SignIn(tk.Frame):
     def __init__(self, parent):
         """Initialise Home Page class."""
         super().__init__(parent)
-        self.grid_columnconfigure(0, weight=1000)
         self.parent = parent
+        self.parent.grid_columnconfigure(0, weight=1000)
         self.create_widgets()
 
     def create_widgets(self):
@@ -61,7 +61,7 @@ class SignIn(tk.Frame):
             self.parent.pages[MainPage] = MainPage(self.parent)
             self.parent.change_page(MainPage)
         else:
-            messagebox.showerror("Oops", "No user was found with those details")
+            messagebox.showinfo("Oops", "No user was found with those details")
 
     def handleRegister(self):
         """Handle the register event."""
