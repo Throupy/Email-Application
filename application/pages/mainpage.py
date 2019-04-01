@@ -1,6 +1,7 @@
 """Main page for the email application."""
 import tkinter as tk
 import tkinter.scrolledtext as tkst
+from tkinter import messagebox
 from datetime import datetime
 from utils.mail import sendMail
 
@@ -38,7 +39,7 @@ class MainPage(tk.Frame):
                                                 borderwidth=3,
                                                 )
         self.title = tk.Label(self.topBarPanedWindow,
-                              text=f"Welcome, {self.parent.CURRENT_USER}",
+                              text=f"{msg}, {self.parent.CURRENT_USER}",
                               font=("Helvetica", 24, "bold"),
                               height=2)
         self.title.grid(row=0, column=2)
@@ -67,36 +68,65 @@ class MainPage(tk.Frame):
         """Handle event of send mail button."""
         self.clearContent()
 
-        self.senderLabel = tk.Label(self.contentFrame, text="Sender")
+        self.senderLabel = tk.Label(self.contentFrame,
+                                    text="    Sender email address")
         self.senderLabel.grid(row=1, column=2, sticky=tk.W)
         self.senderEntry = tk.Entry(self.contentFrame, width=25)
-        self.senderEntry.grid(row=1, column=3, pady=(20), sticky=tk.W)
+        self.senderEntry.grid(row=1, column=3, sticky=tk.W)
 
-        self.recipientLabel = tk.Label(self.contentFrame, text="Recipient")
-        self.recipientLabel.grid(row=2, column=2, sticky=tk.W)
+        self.senderPasswordLabel = tk.Label(self.contentFrame,
+                                            text="    Sender password")
+        self.senderPasswordLabel.grid(row=2, column=2, sticky=tk.W)
+        self.senderPasswordEntry = tk.Entry(self.contentFrame,
+                                            width=25, show="*")
+        self.senderPasswordEntry.grid(row=2, column=3, sticky=tk.W)
+
+        self.recipientLabel = tk.Label(self.contentFrame, text="    Recipient")
+        self.recipientLabel.grid(row=3, column=2, sticky=tk.W)
         self.recipientEntry = tk.Entry(self.contentFrame, width=25)
-        self.recipientEntry.grid(row=2, column=3, sticky=tk.W)
+        self.recipientEntry.grid(row=3, column=3, sticky=tk.W)
+
+        self.iterScaleLabel = tk.Label(self.contentFrame,
+                                       text="    Times to send")
+        self.iterScaleLabel.grid(row=4, column=2)
+        self.iterScale = tk.Scale(self.contentFrame,
+                                  from_=1,
+                                  to=20,
+                                  orient=tk.HORIZONTAL)
+        self.iterScale.grid(row=4, column=3)
 
         self.contentLabel = tk.Label(self.contentFrame, text="Content")
-        self.contentLabel.grid(row=3, column=2)
+        self.contentLabel.grid(row=5, column=2)
         self.content = tkst.ScrolledText(self.contentFrame,
                                          wrap=tk.WORD,
                                          width=25,
                                          height=10)
-        self.content.grid(row=3, column=3, pady=(20))
+        self.content.grid(row=5, column=3, pady=(20))
+
+        self.warningLabel = tk.Label(self.contentFrame,
+                                     text="Please be patient!")
+        self.warningLabel.grid(row=6, column=3)
 
         self.sendButton = tk.Button(self.contentFrame,
                                     text="Send",
                                     command=lambda:
-                                    sendMail(
-                                    self.senderEntry.get(),
-                                    self.recipientEntry.get(),
-                                    self.content.get()
+                                    self.handleSendMailSMTP(
+                                        self.senderEntry.get(),
+                                        self.senderPasswordEntry.get(),
+                                        self.recipientEntry.get(),
+                                        self.content.get("1.0", "end"),
+                                        self.iterScale.get())
                                     )
-                                    )
-        self.sendButton.grid(row=4, column=2)
+        self.sendButton.grid(row=6, column=2)
 
         self.contentFrame.grid(row=1, column=2)
+
+    def handleSendMailSMTP(self, sender, pword, recip, cont, iters):
+        """Call the function which actually sends the email."""
+        if sendMail(sender, pword, recip, cont, iters):
+            messagebox.showinfo("Success", "Your email has been sent")
+        else:
+            messagebox.showerror("Error", "Please check the values and retry")
 
     def clearContent(self):
         """Clear all content from the content frame."""
