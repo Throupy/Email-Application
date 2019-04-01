@@ -1,6 +1,8 @@
 """Main page for the email application."""
 import tkinter as tk
+import tkinter.scrolledtext as tkst
 from datetime import datetime
+from utils.mail import sendMail
 
 
 class MainPage(tk.Frame):
@@ -64,11 +66,36 @@ class MainPage(tk.Frame):
     def handleSendMail(self):
         """Handle event of send mail button."""
         self.clearContent()
-        self.title = tk.Label(self.contentFrame,
-                              text="Send mail",
-                              font=("Helvetica", 18, "bold")
-                              )
-        self.title.grid()
+
+        self.senderLabel = tk.Label(self.contentFrame, text="Sender")
+        self.senderLabel.grid(row=1, column=2, sticky=tk.W)
+        self.senderEntry = tk.Entry(self.contentFrame, width=25)
+        self.senderEntry.grid(row=1, column=3, pady=(20), sticky=tk.W)
+
+        self.recipientLabel = tk.Label(self.contentFrame, text="Recipient")
+        self.recipientLabel.grid(row=2, column=2, sticky=tk.W)
+        self.recipientEntry = tk.Entry(self.contentFrame, width=25)
+        self.recipientEntry.grid(row=2, column=3, sticky=tk.W)
+
+        self.contentLabel = tk.Label(self.contentFrame, text="Content")
+        self.contentLabel.grid(row=3, column=2)
+        self.content = tkst.ScrolledText(self.contentFrame,
+                                         wrap=tk.WORD,
+                                         width=25,
+                                         height=10)
+        self.content.grid(row=3, column=3, pady=(20))
+
+        self.sendButton = tk.Button(self.contentFrame,
+                                    text="Send",
+                                    command=lambda:
+                                    sendMail(
+                                    self.senderEntry.get(),
+                                    self.recipientEntry.get(),
+                                    self.content.get()
+                                    )
+                                    )
+        self.sendButton.grid(row=4, column=2)
+
         self.contentFrame.grid(row=1, column=2)
 
     def clearContent(self):
